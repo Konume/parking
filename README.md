@@ -62,7 +62,7 @@ The goal was to create an intuitive, modern system for efficient parking space a
 ![Notifications View](./img/notifications.png)
 
 ### User Management
-![User Management](./img/user_management.png)
+![User Management](obraz_2024-12-18_191015747.png)
 
 ---
 
