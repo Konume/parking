@@ -1,50 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 
-function Notifications() {
-  const [notifications, setNotifications] = useState([]);
-  const [message, setMessage] = useState('');
-
-  // Funkcja symulująca dodanie powiadomienia - owijamy ją w useCallback, aby uniknąć zmiany przy każdym renderze
-  const addNotification = useCallback((text) => {
-    setNotifications((prevNotifications) => [...prevNotifications, text]);
-    setMessage('');
-  }, []); // useCallback w tym przypadku nie ma zależności, więc nie będzie się zmieniać
-
-  // Usuwanie powiadomienia
-  const removeNotification = (index) => {
-    setNotifications((prevNotifications) => 
-      prevNotifications.filter((_, i) => i !== index)
-    );
-  };
-
-  // Symulacja generowania powiadomień co 5 sekund
-  useEffect(() => {
-    const interval = setInterval(() => {
-      addNotification('Przypomnienie: Przestaw samochód z miejsca 3!');
-    }, 5000); // Dodaje nowe powiadomienie co 5 sekund
-
-    return () => clearInterval(interval); // Czyszczenie po zakończeniu komponentu
-  }, [addNotification]); // Dodaj addNotification jako zależność, która teraz nie zmienia się na każdy render
-
+function Notifications({ notifications, removeNotification }) {
   return (
-    <div>
-      <h2>Powiadomienia</h2>
-      <div>
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Dodaj własne powiadomienie"
-        />
-        <button onClick={() => addNotification(message)}>Dodaj powiadomienie</button>
-      </div>
-      <ul>
-        {notifications.map((notification, index) => (
-          <li key={index}>
-            {notification} <button onClick={() => removeNotification(index)}>Usuń</button>
-          </li>
-        ))}
-      </ul>
+    <div className="fixed top-4 right-4 space-y-2 z-50">
+      {notifications.map((notification, index) => (
+        <div
+          key={index}
+          className={`p-4 rounded shadow-md ${
+            notification.type === 'success'
+              ? 'bg-green-500 text-white'
+              : 'bg-red-500 text-white'
+          }`}
+        >
+          <p>{notification.message}</p>
+          <button
+            onClick={() => removeNotification(index)}
+            className="text-sm underline mt-2"
+          >
+            Zamknij
+          </button>
+        </div>
+      ))}
+      {notifications.length === 0 && (
+        <div className="text-gray-500 text-center">Brak powiadomień do wyświetlenia.</div>
+      )}
     </div>
   );
 }

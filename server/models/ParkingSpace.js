@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 
 const parkingSpaceSchema = new mongoose.Schema({
-  id: { type: Number, required: true },
+  id: { type: Number, required: true, unique: true },
   isOccupied: { type: Boolean, default: false },
+  reservedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }, // Powiązanie z użytkownikiem
 });
 
-const ParkingSpace = mongoose.model('ParkingSpace', parkingSpaceSchema);
-
-module.exports = ParkingSpace;
+module.exports = mongoose.model('ParkingSpace', parkingSpaceSchema);

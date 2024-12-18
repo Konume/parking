@@ -19,6 +19,7 @@ mongoose.connect(mongoUri)
 .catch((err) => console.log('Błąd połączenia z MongoDB:', err));
 // Modele i API Routes
 require('./routes/parking')(app);
+require("./routes/user")(app);
 
 // Obsługa plików statycznych React (dla produkcji)
 if (process.env.NODE_ENV === 'production') {
@@ -34,3 +35,4 @@ const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Serwer działa na porcie ${PORT}`);
 });
+console.log('JWT_SECRET:', process.env.JWT_SECRET); // Dodaj to do pliku server.js
