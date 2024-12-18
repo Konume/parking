@@ -5,6 +5,7 @@ import ReservationForm from './components/ReservationForm';
 import UserManagement from './components/UserManagement';
 import Login from './components/Login';
 import Notifications from './components/Notifications';
+import NotificationsBoard from './components/NotificationsBoard';
 
 function App() {
   const [view, setView] = useState('login');
@@ -63,8 +64,8 @@ function App() {
         return <ReservationForm user={user} />;
       case 'users':
         return <UserManagement />;
-      case 'notifications':
-        return <Notifications notifications={notifications} removeNotification={removeNotification} />;
+      case 'notificationsboard':
+        return <NotificationsBoard notifications={notifications} removeNotification={removeNotification} />;
       default:
         return <div>Wybierz widok</div>;
     }
@@ -74,6 +75,7 @@ function App() {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Header setView={setView} user={user} handleLogout={handleLogout} />
       {/* Przekazujemy powiadomienia do komponentu Notifications */}
+      
       <Notifications notifications={notifications} removeNotification={removeNotification} />
       <main className="flex-grow container mx-auto p-6">{renderView()}</main>
       <footer className="bg-gray-800 text-white text-center py-4">

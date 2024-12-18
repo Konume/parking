@@ -25,7 +25,7 @@ function Header({ setView, user, handleLogout }) {
           </button>
           <button
             className="text-blue-600 hover:underline"
-            onClick={() => setView('notifications')}
+            onClick={() => setView('notificationsboard')}
           >
             Powiadomienia
           </button>
