@@ -37,9 +37,9 @@ function NotificationsBoard() {
   }, []);
 
   return (
-    <div>
-      <h2>Powiadomienia</h2>
-      <div>
+    <div className="container mx-auto p-6">
+      <h2 className="text-2xl font-semibold text-center mb-6">Powiadomienia</h2>
+      <div className="mb-4">
         <input
           type="text"
           placeholder="Dodaj własne powiadomienie"
@@ -47,10 +47,14 @@ function NotificationsBoard() {
             if (e.key === 'Enter') {
               addNotification(e.target.value);
               e.target.value = '';
+              
             }
           }}
+          className="input w-full"
         />
         <button
+               type="submit"
+          className="button is-primary w-full"
           onClick={() => {
             const message = document.querySelector('input').value;
             addNotification(message);
