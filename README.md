@@ -56,7 +56,7 @@ The goal was to create an intuitive, modern system for efficient parking space a
 ## Screenshots
 
 ### Dashboard
-![Parking Dashboard](./img/dashboard.png)
+![Parking Dashboard](obraz_2024-12-18_191430594.png)
 
 ### Notifications
 ![Notifications View](./img/notifications.png)
