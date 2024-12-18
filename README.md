@@ -153,7 +153,6 @@ Implement role-based access for administrators and users.
 Improve UX/UI design using more animations and transitions.
 ### To-do:
 
-Add the ability to cancel reservations.
 Allow users to view their notification history.
 Integration with Google Maps for navigation to parking spots.
 ## Acknowledgements
