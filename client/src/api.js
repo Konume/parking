@@ -2,6 +2,8 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5001/api'; // API jest teraz dostępne pod /api
 
+
+
 // Pobieranie dostępnych miejsc parkingowych
 export const fetchParkingSpaces = async () => {
   try {
@@ -19,27 +21,27 @@ export const fetchParkingSpaces = async () => {
 };
 
 // Rezerwowanie miejsca parkingowego
-
 export const reserveParkingSpace = async (parkingId) => {
   try {
-    const token = localStorage.getItem('token'); // Pobieramy token z localStorage
+    const token = localStorage.getItem('token');
     if (!token) throw new Error('Brak tokenu. Zaloguj się ponownie.');
     const response = await axios.post(
       `${API_URL}/reserve`,
       { parkingId },
       {
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`, // Dodajemy token do nagłówka
+          Authorization: `Bearer ${token}`,
         },
       }
     );
     return response.data;
   } catch (error) {
-    console.error('Błąd przy rezerwowaniu miejsca:', error);
+    console.error('Błąd przy rezerwowaniu miejsca:', error.response?.data || error.message);
     throw error;
   }
 };
+
+
 
 
 // Przykładowe dane użytkowników (dodatkowe funkcje)

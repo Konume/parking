@@ -1,29 +1,34 @@
 import React, { useState } from 'react';
+import { reserveParkingSpace } from '../api';
+
 
 function ReservationForm({ user }) {
   const [parkingId, setParkingId] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Dodano wskaźnik ładowania
 
   const handleReserve = async (e) => {
     e.preventDefault();
 
-    // Sprawdzanie, czy użytkownik jest dostępny
+    if (!parkingId.trim()) {
+      setMessage('ID miejsca parkingowego nie może być puste.');
+      return;
+    }
+
     if (!user || !user.id) {
       setMessage('Błąd: Brak danych użytkownika.');
       return;
     }
 
-    // Wysyłanie danych rezerwacji wraz z danymi użytkownika
-    const response = await fetch('http://localhost:5001/api/reserve', {
-      method: 'POST',
-      body: JSON.stringify({ parkingId, userId: user.id }),
-      headers: { 'Content-Type': 'application/json' ,
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-      },
-    });
-
-    const data = await response.json();
-    setMessage(data.message); // Komunikat o rezerwacji
+    setIsLoading(true); // Rozpoczęcie ładowania
+    try {
+      const response = await reserveParkingSpace(parkingId);
+      setMessage(response.message || 'Rezerwacja zakończona sukcesem.');
+    } catch (error) {
+      setMessage('Błąd podczas rezerwacji: ' + (error.response?.data?.message || error.message));
+    } finally {
+      setIsLoading(false); // Koniec ładowania
+    }
   };
 
   return (
@@ -39,9 +44,15 @@ function ReservationForm({ user }) {
             className="input w-full"
           />
         </div>
-        <button type="submit" className="button is-primary w-full">Rezerwuj</button>
+        <button
+          type="submit"
+          className="button is-primary w-full"
+          disabled={isLoading} // Blokada przycisku podczas ładowania
+        >
+          {isLoading ? 'Rezerwowanie...' : 'Rezerwuj'}
+        </button>
       </form>
-      {message && <p>{message}</p>}
+      {message && <p className="mt-4 text-red-600">{message}</p>}
     </div>
   );
 }
