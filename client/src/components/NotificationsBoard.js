@@ -1,64 +1,52 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Notifications from './Notifications';
 
 function NotificationsBoard() {
   const [notifications, setNotifications] = useState([]);
-  const nextId = useRef(1); // Do nadawania unikalnych ID powiadomieniom
-  const timers = useRef({}); // Do śledzenia timerów
+  const nextId = useRef(1); // Unikalne ID dla powiadomień
+   
 
-  // Funkcja dodająca powiadomienie
+  const notificationInputRef = useRef(); // Ref do inputa
+
   const addNotification = (message, type = 'info') => {
     const id = nextId.current++;
     setNotifications((prev) => [
       ...prev,
       { id, message, type },
     ]);
+    console.log("Added notification:", message);
 
-    // Ustaw timer do usunięcia powiadomienia po 5 sekundach
-    const timer = setTimeout(() => removeNotification(id), 5000);
-    timers.current[id] = timer;
-  };
+  }
 
-  // Funkcja usuwająca powiadomienie
   const removeNotification = (id) => {
     setNotifications((prev) => prev.filter((notif) => notif.id !== id));
-    // Wyczyść timer powiązany z tym powiadomieniem
-    if (timers.current[id]) {
-      clearTimeout(timers.current[id]);
-      delete timers.current[id];
-    }
+    
   };
 
-  // Czyszczenie wszystkich timerów przy odmontowaniu komponentu
-  useEffect(() => {
-    return () => {
-      Object.values(timers.current).forEach(clearTimeout);
-    };
-  }, []);
+
 
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-2xl font-semibold text-center mb-6">Powiadomienia</h2>
       <div className="mb-4">
         <input
+          ref={notificationInputRef}
           type="text"
           placeholder="Dodaj własne powiadomienie"
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               addNotification(e.target.value);
               e.target.value = '';
-              
             }
           }}
           className="input w-full"
         />
         <button
-               type="submit"
           className="button is-primary w-full"
           onClick={() => {
-            const message = document.querySelector('input').value;
+            const message = notificationInputRef.current.value;
             addNotification(message);
-            document.querySelector('input').value = '';
+            notificationInputRef.current.value = ''; // Resetowanie inputa
           }}
         >
           Dodaj powiadomienie

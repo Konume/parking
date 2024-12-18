@@ -41,7 +41,28 @@ export const reserveParkingSpace = async (parkingId) => {
   }
 };
 
+export const cancelParkingSpaceReservation = async (parkingId) => {
+  try {
+    const token = localStorage.getItem('token'); // Pobieranie tokenu z localStorage
+    if (!token) throw new Error('Brak tokenu. Zaloguj się ponownie.');
+    const response = await fetch(`${API_URL}/parking-spaces/${parkingId}/cancel`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Token JWT
+      },
+    });
 
+    if (!response.ok) {
+      throw new Error('Błąd podczas anulowania rezerwacji');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(error.message || 'Błąd anulowania rezerwacji');
+  }
+};
 
 
 // Przykładowe dane użytkowników (dodatkowe funkcje)

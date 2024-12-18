@@ -19,7 +19,8 @@ mongoose.connect(mongoUri)
 .catch((err) => console.log('Błąd połączenia z MongoDB:', err));
 // Modele i API Routes
 require('./routes/parking')(app);
-require("./routes/user")(app);
+require('./routes/user')(app);
+
 
 // Obsługa plików statycznych React (dla produkcji)
 if (process.env.NODE_ENV === 'production') {
