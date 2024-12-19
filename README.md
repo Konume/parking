@@ -59,7 +59,7 @@ The goal was to create an intuitive, modern system for efficient parking space a
 ![Parking Dashboard](obraz_2024-12-18_191430594.png)
 
 ### Notifications
-![Notifications View](./img/notifications.png)
+![Notifications View](obraz_2024-12-18_213112179.png)
 
 ### User Management
 ![User Management](obraz_2024-12-18_191015747.png)
@@ -153,7 +153,6 @@ Implement role-based access for administrators and users.
 Improve UX/UI design using more animations and transitions.
 ### To-do:
 
-Add the ability to cancel reservations.
 Allow users to view their notification history.
 Integration with Google Maps for navigation to parking spots.
 ## Acknowledgements
