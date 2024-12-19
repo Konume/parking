@@ -66,15 +66,50 @@ export const cancelParkingSpaceReservation = async (parkingId) => {
 
 
 // Przykładowe dane użytkowników (dodatkowe funkcje)
-export async function fetchUsers() {
-  return [
-    { id: 1, name: 'Jan Kowalski', email: 'jan@example.com' },
-    { id: 2, name: 'Anna Nowak', email: 'anna@example.com' },
-  ];
-}
+export const fetchUsers = async () => {
+  try {
+    const token = localStorage.getItem('token'); // Pobierz token z localStorage
+    const response = await axios.get(`${API_URL}/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Dodanie tokenu do nagłówka
+      },
+    });
+    return response.data; // Zwrócenie rzeczywistych danych użytkowników
+  } catch (error) {
+    console.error('Błąd przy pobieraniu użytkowników:', error.response?.data || error.message);
+    throw error;
+  }
+};
 
-export async function deleteUser(id) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve({ success: true }), 500);
+
+export const createUser = async (user) => {
+  const token = localStorage.getItem('token');
+  const response = await axios.post(`${API_URL}/users`, user, {
+    headers: { Authorization: `Bearer ${token}` },
   });
-}
+  return response;
+};
+
+export const updateUser = async (id, user) => {
+  const token = localStorage.getItem('token');
+  const response = await axios.put(`${API_URL}/users/${id}`, user, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response;
+};
+export const deleteUser = async (id) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.delete(`${API_URL}/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data; // Przypuszczamy, że API zwraca odpowiedź o sukcesie
+  } catch (error) {
+    console.error('Błąd przy usuwaniu użytkownika:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
