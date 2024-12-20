@@ -154,7 +154,7 @@ Improve UX/UI design using more animations and transitions.
 ### To-do:
 
 Allow users to view their notification history.
-Integration with Google Maps for navigation to parking spots.
+Integration with Google Maps or using Leaflet for navigation to parking spots.
 ## Acknowledgements
 This project was inspired by the need for modern, dynamic parking management systems. Special thanks to:
 
