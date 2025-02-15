@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { fetchUsers, deleteUser, createUser, updateUser } from '../api';
 
 function UserManagement() {
-  
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'user', password: '' });
@@ -25,13 +24,24 @@ function UserManagement() {
 
   const validate = (user) => {
     const newErrors = {};
-    if (!user.password.trim()) newErrors.password = 'Hasło jest wymagane.';
-    else if (user.password.length < 6) newErrors.password = 'Hasło musi mieć co najmniej 6 znaków.';
-    if (!user.name.trim()) newErrors.name = 'Imię i nazwisko jest wymagane.';
-    else if (user.name.length < 3) newErrors.name = 'Imię musi mieć co najmniej 3 znaki.';
-    if (!user.email.trim()) newErrors.email = 'E-mail jest wymagany.';
-    else if (!/\S+@\S+\.\S+/.test(user.email))
+    if (!user.password || !user.password.trim()) {
+      newErrors.password = 'Hasło jest wymagane.';
+    } else if (user.password.length < 6) {
+      newErrors.password = 'Hasło musi mieć co najmniej 6 znaków.';
+    }
+
+    if (!user.name || !user.name.trim()) {
+      newErrors.name = 'Imię i nazwisko jest wymagane.';
+    } else if (user.name.length < 3) {
+      newErrors.name = 'Imię musi mieć co najmniej 3 znaki.';
+    }
+
+    if (!user.email || !user.email.trim()) {
+      newErrors.email = 'E-mail jest wymagany.';
+    } else if (!/\S+@\S+\.\S+/.test(user.email)) {
       newErrors.email = 'Niepoprawny format adresu e-mail.';
+    }
+
     return newErrors;
   };
 
@@ -51,14 +61,14 @@ function UserManagement() {
       console.error('Błąd przy dodawaniu użytkownika:', error);
       setMessage('Błąd przy dodawaniu użytkownika.');
     } finally {
-      setNewUser({ name: '', email: '', role: 'user' });
+      setNewUser({ name: '', email: '', role: 'user', password: '' });
       setErrors({});
     }
   };
 
   const handleEdit = (user) => {
     setEditingUser(user);
-    setNewUser({ name: user.name, email: user.email, role: user.role });
+    setNewUser({ id: user._id, name: user.name, email: user.email, role: user.role });
   };
 
   const handleSaveEdit = async (e) => {
@@ -70,10 +80,10 @@ function UserManagement() {
     }
 
     try {
-      await updateUser(editingUser.id, newUser);
+      await updateUser(newUser.id, newUser);
       setUsers(
         users.map((user) =>
-          user.id === editingUser.id ? { ...user, ...newUser } : user
+          user._id === newUser.id ? { ...user, ...newUser } : user
         )
       );
       setMessage('Dane użytkownika zostały zaktualizowane.');
@@ -82,22 +92,16 @@ function UserManagement() {
       setMessage('Błąd przy edytowaniu użytkownika.');
     } finally {
       setEditingUser(null);
-      setNewUser({ name: '', email: '', role: 'user' });
+      setNewUser({ name: '', email: '', role: 'user', password: '' });
       setErrors({});
     }
   };
 
   const handleDelete = async (id) => {
-    console.log('ID do usunięcia:', id);  // Sprawdzenie, co jest przekazywane
-    if (!id) {
-      console.error('Niepoprawne ID użytkownika');
-      return;
-    }
-  
     try {
-      const response = await deleteUser(id);  // Przekazanie id użytkownika do usunięcia
+      const response = await deleteUser(id);
       if (response.success) {
-        setUsers(users.filter((user) => user.id !== id));  // Usuwanie użytkownika z listy
+        setUsers(users.filter((user) => user._id !== id));
         setMessage('Użytkownik został usunięty.');
       } else {
         setMessage('Błąd przy usuwaniu użytkownika.');
@@ -107,14 +111,12 @@ function UserManagement() {
       setMessage('Błąd usuwania użytkownika.');
     }
   };
-  
-  
+
   const filteredUsers = users.filter(
     (user) =>
       (user.name && user.name.toLowerCase().includes(search.toLowerCase())) ||
       (user.email && user.email.toLowerCase().includes(search.toLowerCase()))
   );
-  
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -142,7 +144,7 @@ function UserManagement() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredUsers.map((user) => (
             <div
-              key={user.id}
+              key={user._id}
               className="bg-white p-4 rounded-lg shadow-md flex flex-col justify-between transition-transform transform hover:scale-105"
             >
               <div>
@@ -204,7 +206,7 @@ function UserManagement() {
             )}
           </div>
           <div>
-            <label className="block text-gray-600 mb-1">Password</label>
+            <label className="block text-gray-600 mb-1">Hasło</label>
             <input
               type="password"
               placeholder="Wprowadź hasło"
@@ -239,7 +241,7 @@ function UserManagement() {
                 type="button"
                 onClick={() => {
                   setEditingUser(null);
-                  setNewUser({ name: '', email: '', role: 'user' });
+                  setNewUser({ name: '', email: '', role: 'user', password: '' });
                   setErrors({});
                 }}
                 className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"

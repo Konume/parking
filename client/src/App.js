@@ -7,7 +7,7 @@ import Login from './components/Login';
 import Notifications from './components/Notifications';
 import NotificationsBoard from './components/NotificationsBoard';
 import CancelReservation from './components/CancelReservation';
-
+import Map from './components/Map';
 function App() {
   const [view, setView] = useState('login');
   const [user, setUser] = useState(null);
@@ -75,6 +75,8 @@ function App() {
         return <NotificationsBoard notifications={notifications} removeNotification={removeNotification} />;
       case 'cancelReservation':
         return <CancelReservation />;
+      case 'map':
+        return <Map />;
       default:
         return <div>Wybierz widok</div>;
     }
@@ -88,6 +90,7 @@ function App() {
         handleLogout={handleLogout} 
         notifications={notifications} // Przekazujemy powiadomienia do nagłówka
         removeNotification={removeNotification} 
+        
       />
       {/* Przekazujemy powiadomienia do komponentu Notifications */}
       <Notifications notifications={notifications} removeNotification={removeNotification} />

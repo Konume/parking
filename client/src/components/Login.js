@@ -15,6 +15,16 @@ function Login({ onLogin }) {
       return;
     }
 
+    // Walidacja e-maila
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Proszę podać poprawny adres e-mail');
+      return;
+    }
+    console.log("Email:", email);
+    console.log("Password:", password);
+  
+
     setLoading(true); // Rozpoczęcie ładowania
     try {
       const response = await fetch('http://localhost:5001/api/login', {
@@ -25,16 +35,17 @@ function Login({ onLogin }) {
 
       const data = await response.json();
 
-      if (response.ok) {
-        // Zapisanie danych użytkownika i tokenu w localStorage
-        localStorage.setItem('user', JSON.stringify(data.user));
-        localStorage.setItem('token', data.token);
-
-        // Wywołujemy funkcję `onLogin` z danymi użytkownika
-        onLogin(data.user);
-      } else {
-        setError(data.message); // Obsługa błędu logowania
+      if (!response.ok) {
+        setError(data.message || 'Nieznany błąd');
+        return;
       }
+
+      // Zapisanie danych użytkownika i tokenu w localStorage
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', data.token);
+
+      // Wywołujemy funkcję `onLogin` z danymi użytkownika
+      onLogin(data.user);
     } catch (error) {
       setError('Błąd połączenia z serwerem');
       console.error(error);

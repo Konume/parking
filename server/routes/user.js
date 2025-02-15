@@ -3,27 +3,45 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const User = require('../models/users');
 
-module.exports = (app) => {
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(403).json({ message: 'Brak tokena, autoryzacja odmówiona.' });
 
+  const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Nieprawidłowy token.' });
+  }
+};
+
+const checkRole = (role) => (req, res, next) => {
+  if (req.user.role !== role) {
+    return res.status(403).json({ message: 'Brak uprawnień.' });
+  }
+  next();
+};
+
+module.exports = (app) => {
   // Logowanie użytkownika
   app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
-
     try {
       const user = await User.findOne({ email });
       if (!user) {
-        return res.status(404).json({ message: 'Użytkownik nie znaleziony.' });
+        return res.status(401).json({ message: 'Nieprawidłowe dane logowania.' });
       }
 
-      // Porównanie hasła
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ message: 'Nieprawidłowe hasło.' });
+        return res.status(401).json({ message: 'Nieprawidłowe hasło.' });
       }
 
-      // Generowanie tokenu JWT
       const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
-        expiresIn: '1h', // Czas wygaśnięcia tokenu na 1 godzinę
+        expiresIn: '1h',
       });
 
       res.json({
@@ -43,21 +61,26 @@ module.exports = (app) => {
   });
 
   // Edytowanie użytkownika
-  app.put('/api/users/:id', async (req, res) => {
+  app.put('/api/users/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
-    const { name, email, role } = req.body;
+    const { name, email, role, password } = req.body;
+    const mongoose = require('mongoose');
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Niepoprawne ID użytkownika.' });
+    }
     try {
       const user = await User.findById(id);
       if (!user) {
         return res.status(404).json({ message: 'Użytkownik nie znaleziony.' });
       }
 
-      // Aktualizacja danych użytkownika
       user.name = name || user.name;
       user.email = email || user.email;
       user.role = role || user.role;
-
+      if (password) {
+        user.password = await bcrypt.hash(password, 10);
+      }
       await user.save();
 
       res.json({ message: 'Dane użytkownika zostały zaktualizowane.', user });
@@ -77,7 +100,6 @@ module.exports = (app) => {
         return res.status(400).json({ message: 'Użytkownik z takim e-mailem już istnieje.' });
       }
 
-      // Tworzenie nowego użytkownika
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new User({
         name,
@@ -104,7 +126,7 @@ module.exports = (app) => {
   });
 
   // Pobieranie wszystkich użytkowników
-  app.get('/api/users', async (req, res) => {
+  app.get('/api/users', verifyToken, async (req, res) => {
     try {
       const users = await User.find();
       res.json(users);
@@ -115,7 +137,7 @@ module.exports = (app) => {
   });
 
   // Usuwanie użytkownika
-  app.delete('/api/users/:id', async (req, res) => {
+  app.delete('/api/users/:id', verifyToken, checkRole('admin'), async (req, res) => {
     const { id } = req.params;
     try {
       const user = await User.findById(id);
@@ -123,15 +145,12 @@ module.exports = (app) => {
         return res.status(404).json({ message: 'Użytkownik nie znaleziony.' });
       }
 
-      // Usuwanie użytkownika
       await User.findByIdAndDelete(id);
 
-      // Odpowiedź z informacją o sukcesie
       res.json({ success: true, message: 'Użytkownik został usunięty.' });
     } catch (error) {
       console.error('Błąd usuwania użytkownika:', error);
       res.status(500).json({ success: false, message: 'Błąd przy usuwaniu użytkownika.' });
     }
   });
-
 };

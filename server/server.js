@@ -10,7 +10,7 @@ const app = express();
 console.log('MongoDB URI:', process.env.MONGO_URI); 
 const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/parking';
 // Middleware
-app.use(cors()); // Umożliwia CORS
+app.use(cors({ origin: "http://localhost:3000", credentials: true })); // Umożliwia CORS
 app.use(bodyParser.json()); // Parsowanie JSON
 
 // MongoDB Connection
