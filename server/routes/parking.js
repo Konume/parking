@@ -5,7 +5,7 @@ module.exports = (app) => {
   // Pobieranie miejsc parkingowych
   app.get('/api/parkingSpaces', async (req, res) => {
     try {
-      const spaces = await ParkingSpace.find(); // Pobranie wszystkich miejsc
+      const spaces = await ParkingSpace.find().populate('reservedBy', 'name email'); // Pobranie wszystkich miejsc
       res.json(spaces); // Zwrócenie miejsc parkingowych w odpowiedzi
     } catch (error) {
       res.status(500).json({ message: 'Błąd przy pobieraniu miejsc.' });

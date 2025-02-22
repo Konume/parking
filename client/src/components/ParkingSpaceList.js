@@ -21,6 +21,11 @@ const ParkingSpaceCard = ({ space, onReserve }) => (
     <p className="text-white text-center mt-2">
       {space.isOccupied ? "Zajęte" : "Wolne"}
     </p>
+    {space.isOccupied && space.reservedBy && (
+      <p className="text-white text-center text-sm mt-1">
+        Zarezerwowane przez: {space.reservedBy.name || "Nieznany użytkownik"}
+      </p>
+    )}
   </div>
 );
 
