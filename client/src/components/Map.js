@@ -46,7 +46,15 @@ function Map() {
         position={[space.latitude, space.longitude]}
         icon={defaultIcon}> 
           <Popup>
-            Miejsce {space.id} <br /> {space.isOccupied ? 'Zajęte' : 'Wolne'}
+           <strong> Miejsce {space.id} </strong> <br /> 
+           {space.isOccupied ? (
+            <>
+             <span className="text-red-500">Zajęte</span> <br />
+             {space.reservedBy ? `Rezerwacja: ${space.reservedBy.name}` : "Brak informacji"}
+            </>
+            ):(
+            <span className="text-green-500">Wolne</span>
+            )}
           </Popup>
         </Marker>
       ))}

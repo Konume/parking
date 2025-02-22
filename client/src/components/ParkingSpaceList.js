@@ -60,8 +60,9 @@ function ParkingSpaceList() {
       const response = await reserveParkingSpace(parkingId);
       toast.success(response.message); // Powiadomienie sukcesu
       // Aktualizacja stanu po rezerwacji
-      const updatedSpaces = spaces.map(space =>
-        space.id === parkingId ? { ...space, isOccupied: true } : space
+      const updatedSpace = await fetchParkingSpaces();
+      const updatedSpaces = updatedSpace.map(space =>
+        space.id === parkingId ? space : spaces.find(s => s.id === space.id)
       );
       setSpaces(updatedSpaces);
     } catch (error) {

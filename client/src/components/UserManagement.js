@@ -9,6 +9,7 @@ function UserManagement() {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState(null);
   const [search, setSearch] = useState('');
+  
 
   useEffect(() => {
     fetchUsers()
@@ -21,6 +22,7 @@ function UserManagement() {
         setLoading(false);
       });
   }, []);
+  
 
   const validate = (user) => {
     const newErrors = {};
@@ -128,6 +130,8 @@ function UserManagement() {
       (user.name && user.name.toLowerCase().includes(search.toLowerCase())) ||
       (user.email && user.email.toLowerCase().includes(search.toLowerCase()))
   );
+
+  
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">

@@ -74,6 +74,11 @@ function CancelReservation() {
                 />
                 <p className="text-white text-center font-semibold">Miejsce {space.id}</p>
                 <p className="text-white text-center mt-2">Zajęte</p>
+                {space.reservedBy && (
+        <p className="text-white text-center mt-2">
+          Zarezerwowane przez: {space.reservedBy.name || "Nieznany użytkownik"}
+        </p>
+      )}
                 <p className="text-white text-center mt-2">Kliknij, aby anulować rezerwację</p>
               </div>
             ))
