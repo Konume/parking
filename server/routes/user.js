@@ -1,8 +1,10 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
+
 const User = require('../models/users');
 
+// Funkcja do weryfikacji tokenu
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   if (!authHeader) return res.status(403).json({ message: 'Brak tokena, autoryzacja odmówiona.' });
@@ -29,13 +31,21 @@ module.exports = (app) => {
   // Logowanie użytkownika
   app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
+    
     try {
       const user = await User.findOne({ email });
+
       if (!user) {
         return res.status(401).json({ message: 'Nieprawidłowe dane logowania.' });
       }
 
+      console.log('Hasło z formularza:', password);
+      console.log('Hasło zapisane w bazie:', user.password);
+
+      // Porównanie haseł przy użyciu tej samej soli bcrypt
       const isMatch = await bcrypt.compare(password, user.password);
+      console.log('Porównanie bcrypt:', password, user.password, isMatch);
+
       if (!isMatch) {
         return res.status(401).json({ message: 'Nieprawidłowe hasło.' });
       }
@@ -59,7 +69,6 @@ module.exports = (app) => {
       res.status(500).json({ message: 'Błąd logowania.' });
     }
   });
-
   // Edytowanie użytkownika
   app.put('/api/users/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
@@ -100,11 +109,17 @@ module.exports = (app) => {
         return res.status(400).json({ message: 'Użytkownik z takim e-mailem już istnieje.' });
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+      console.log('Hasło przed haszowaniem:', password);  // Logowanie hasła przed haszowaniem
+      const salt = await bcrypt.genSalt(10);
+      // Haszowanie hasła przy użyciu tej samej wersji bcrypt (np. 10 rund)
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      console.log('Nowy hash przed zapisem:', hashedPassword);  // Logowanie hasła po haszowaniu
+
       const newUser = new User({
         name,
         email,
-        password: hashedPassword,
+        password, // Przechowujemy hasło jawne, haszowanie wykona model
         role,
       });
 
@@ -124,6 +139,7 @@ module.exports = (app) => {
       res.status(500).json({ message: 'Błąd przy tworzeniu użytkownika.' });
     }
   });
+
 
   // Pobieranie wszystkich użytkowników
   app.get('/api/users', verifyToken, async (req, res) => {
@@ -153,4 +169,6 @@ module.exports = (app) => {
       res.status(500).json({ success: false, message: 'Błąd przy usuwaniu użytkownika.' });
     }
   });
+
 };
+

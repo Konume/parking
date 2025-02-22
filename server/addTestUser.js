@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+/**const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('./models/users'); // Upewnij się, że ścieżka jest poprawna
 
@@ -18,12 +18,12 @@ const addTestUser = async () => {
 
     const user = new User({
       name: 'Zuzanna',
-      email: 'zs@example.com',
-      password: hashedPassword,
-      role: 'admin',
-    });
+      email: 'zs*///@example.com',
+    //  password: hashedPassword,
+     // role: 'admin',
+   // });
 
-    await user.save();
+  /**   await user.save();
     console.log('Testowy użytkownik został dodany.');
     process.exit();
   } catch (error) {
@@ -32,4 +32,4 @@ const addTestUser = async () => {
   }
 };
 
-addTestUser();
+addTestUser(); */

@@ -2,7 +2,7 @@ import React from 'react';
 
 function Header({ setView, user, handleLogout, notifications, removeNotification }) {
   return (
-    <nav className="flex justify-center space-x-4 bg-gray-200 p-4 shadow-md">
+    <nav className="flex justify-center space-x-4 bg-gray-200 p-4 shadow-md w-full">
       {user && (
         <>
           <button
