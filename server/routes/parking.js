@@ -49,7 +49,7 @@ module.exports = (app) => {
       if (!space.isOccupied) return res.status(400).json({ message: 'To miejsce parkingowe nie jest zajęte.' });
 
       // Jeśli rezerwacja należy do innego użytkownika, nie można anulować rezerwacji
-      if (space.reservedBy.toString() === userId && req.user.role === 'admin') {
+      if (req.user.role !== 'admin' && space.reservedBy.toString() !== userId ) {
         return res.status(403).json({ message: 'Nie masz uprawnień do anulowania tej rezerwacji.' });
       }
 
