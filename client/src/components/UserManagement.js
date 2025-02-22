@@ -52,10 +52,20 @@ function UserManagement() {
       setErrors(validationErrors);
       return;
     }
+    const newUserWithId = { ...newUser, _id: Date.now() }; // Możesz użyć tymczasowego ID lub zrób to tak, jak odpowiada Twój backend
+    setUsers((prevUsers) => [...prevUsers, newUserWithId]);
+    setMessage('Użytkownik został dodany.');
 
     try {
+      
+      // Dodanie nowego użytkownika do stanu bez ponownego ładowania listy
       const response = await createUser(newUser);
-      setUsers([...users, response.data]);
+    // Aktualizuj użytkownika w liście po otrzymaniu odpowiedzi z serwera
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user._id === newUserWithId._id ? { ...user, _id: response.data._id } : user
+      )
+    );
       setMessage('Użytkownik został dodany.');
     } catch (error) {
       console.error('Błąd przy dodawaniu użytkownika:', error);
@@ -81,6 +91,7 @@ function UserManagement() {
 
     try {
       await updateUser(newUser.id, newUser);
+      // Zaktualizowanie listy użytkowników po edycji
       setUsers(
         users.map((user) =>
           user._id === newUser.id ? { ...user, ...newUser } : user
@@ -101,7 +112,7 @@ function UserManagement() {
     try {
       const response = await deleteUser(id);
       if (response.success) {
-        setUsers(users.filter((user) => user._id !== id));
+        setUsers(users.filter((user) => user._id !== id)); // Natychmiastowe usunięcie użytkownika
         setMessage('Użytkownik został usunięty.');
       } else {
         setMessage('Błąd przy usuwaniu użytkownika.');

@@ -7,12 +7,16 @@ const User = require('../models/users');
 // Funkcja do weryfikacji tokenu
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  if (!authHeader) return res.status(403).json({ message: 'Brak tokena, autoryzacja odmówiona.' });
+  if (!authHeader || !authHeader.startsWith('Bearer ') ) {
+    return res.status(403).json({ message: 'Brak tokena, autoryzacja odmówiona.' });
+  }
 
-  const token = authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
+  const token = authHeader.split(' ')[1];
+ 
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+   
     req.user = decoded;
     next();
   } catch (error) {
@@ -39,12 +43,11 @@ module.exports = (app) => {
         return res.status(401).json({ message: 'Nieprawidłowe dane logowania.' });
       }
 
-      console.log('Hasło z formularza:', password);
-      console.log('Hasło zapisane w bazie:', user.password);
+     
 
       // Porównanie haseł przy użyciu tej samej soli bcrypt
       const isMatch = await bcrypt.compare(password, user.password);
-      console.log('Porównanie bcrypt:', password, user.password, isMatch);
+     
 
       if (!isMatch) {
         return res.status(401).json({ message: 'Nieprawidłowe hasło.' });
@@ -70,7 +73,7 @@ module.exports = (app) => {
     }
   });
   // Edytowanie użytkownika
-  app.put('/api/users/:id', verifyToken, async (req, res) => {
+  app.put('/api/users/:id', verifyToken, checkRole('admin'),async (req, res) => {
     const { id } = req.params;
     const { name, email, role, password } = req.body;
     const mongoose = require('mongoose');
@@ -109,12 +112,11 @@ module.exports = (app) => {
         return res.status(400).json({ message: 'Użytkownik z takim e-mailem już istnieje.' });
       }
 
-      console.log('Hasło przed haszowaniem:', password);  // Logowanie hasła przed haszowaniem
+      
       const salt = await bcrypt.genSalt(10);
       // Haszowanie hasła przy użyciu tej samej wersji bcrypt (np. 10 rund)
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      console.log('Nowy hash przed zapisem:', hashedPassword);  // Logowanie hasła po haszowaniu
 
       const newUser = new User({
         name,

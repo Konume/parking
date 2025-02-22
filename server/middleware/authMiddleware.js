@@ -12,7 +12,8 @@ const authenticateToken = (req, res, next) => {
     }
 
     // Można również zapisać dane użytkownika do req.user, jeśli chcesz je używać w innych częściach kodu
-    req.user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.id);
+    req.user={ id: user._id, role: user.role };
     next();
   });
 };
