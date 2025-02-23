@@ -84,32 +84,30 @@ function App() {
       case 'reservation':
         return <ReservationForm user={user} />;
       case 'users':
-        return user?.role === 'admin' ? (
-          <UserManagement />
-        ) : (
-          <p className="text-center text-red-500">Brak uprawnień do tej strony.</p>
-        );
-      case 'notificationsboard':
-        return (
-          <NotificationsBoard
-            notifications={notifications}
-            addNotification={addNotification}
-            removeNotification={removeNotification}
-          />
-        );
+        return user?.role === 'admin' ? <UserManagement />: <p className="text-center text-red-500">Brak uprawnień do tej strony.</p>;
+        case 'notificationsboard':
+          return <NotificationsBoard notifications={notifications} addNotification={addNotification} removeNotification={removeNotification} />;        
       case 'cancelReservation':
         return <CancelReservation />;
       case 'map':
-        return <Map />;
+        return (
+          <>
+            <Notifications notifications={notifications} removeNotification={removeNotification} />
+            <Map />
+          </>
+        );
       default:
         return <div>Wybierz widok</div>;
     }
   };
-
+  
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Header setView={setView} user={user} handleLogout={handleLogout} />
+      <div className="absolute top-10 right-10 z-[1000]">
+
       <Notifications notifications={notifications} removeNotification={removeNotification} />
+      </div>
       <main className="flex-grow container mx-auto p-6">{renderView()}</main>
       <footer className="bg-gray-800 text-white text-center py-4">
         <p>&copy; {new Date().getFullYear()} Parking App. Wszystkie prawa zastrzeżone.</p>

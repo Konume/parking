@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-function NotificationsBoard({ notifications, addNotification, removeNotification }) {
+function NotificationsBoard({ notifications = [], addNotification, removeNotification }) {
   const notificationInputRef = useRef();
   const placeInputRef = useRef();
 
