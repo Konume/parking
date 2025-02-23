@@ -65,7 +65,8 @@ The goal was to create an intuitive, modern system for efficient parking space a
 ![User Management](obraz_2024-12-18_191015747.png)
 
 ### Mapa
-![Map View](obraz-mapa.png)
+![Map View](![image](https://github.com/user-attachments/assets/e02468b7-5a0b-4cdf-87b9-0f1633aefd94)
+)
 
 ---
 
