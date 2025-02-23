@@ -90,9 +90,7 @@ module.exports = (app) => {
       user.name = name || user.name;
       user.email = email || user.email;
       user.role = role || user.role;
-      if (password) {
-        user.password = await bcrypt.hash(password, 10);
-      }
+     user.password = password || user.password;
       await user.save();
 
       res.json({ message: 'Dane użytkownika zostały zaktualizowane.', user });

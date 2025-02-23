@@ -23,12 +23,15 @@ function Header({ setView, user, handleLogout, notifications, removeNotification
           >
             Anulowanie Rezerwacji
           </button>
-          <button
-            className="text-blue-600 hover:underline"
-            onClick={() => setView('users')}
-          >
-            Użytkownicy
-          </button>
+          {/*Ukrycie sekcji "Użytkownicy" dla nie-adminów */}
+          {user?.role === 'admin' && (
+            <button
+              className="text-blue-600 hover:underline"
+              onClick={() => setView('users')}
+            >
+              Użytkownicy
+            </button>
+          )}
           <button
             className="text-blue-600 hover:underline"
             onClick={() => setView('notificationsboard')}

@@ -8,41 +8,55 @@ import Notifications from './components/Notifications';
 import NotificationsBoard from './components/NotificationsBoard';
 import CancelReservation from './components/CancelReservation';
 import Map from './components/Map';
+
 function App() {
   const [view, setView] = useState('login');
   const [user, setUser] = useState(null);
   const [notifications, setNotifications] = useState([]); // Stan powiadomień
+  const [reservations, setReservations] = useState([]);
+
+  // Znajdź użytkownika, który ma rezerwację na to miejsce
+  const findUserByPlace = (placeNumber) => {
+    return reservations.find((res) => res.placeNumber === placeNumber)?.user || null;
+  };
 
   // Dodawanie powiadomienia
-  const addNotification = (message, type = 'success') => {
+  const addNotification = (message, placeNumber, type = 'info', autoRemove = false) => {
+    if (!placeNumber) {
+      alert('Podaj numer miejsca parkingowego!');
+      return;
+    }
     const newNotification = {
       id: new Date().getTime(), // Unikalne ID na podstawie czasu
-      message,
+      message: `Miejsce parkingowe: ${placeNumber} - ${message}`,
       type,
+      placeNumber,
+      userId: findUserByPlace(placeNumber)?.id || null,
     };
-    setNotifications((prevNotifications) => [
-      ...prevNotifications,
-      newNotification,
-    ]);
 
-    // Ustawiamy timer, który usunie powiadomienie po 5 sekundach
-    setTimeout(() => {
-      removeNotification(newNotification.id);
-    }, 5000);
+    setNotifications((prev) => [...prev, newNotification]);
+
+    if (autoRemove) {
+      setTimeout(() => {
+        removeNotification(newNotification.id);
+      }, 5000);
+    } else {
+      setTimeout(() => {
+        removeNotification(newNotification.id);
+      }, 15 * 60 * 1000); // 15 minut
+    }
   };
 
   // Usuwanie powiadomienia
   const removeNotification = (id) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification.id !== id)
-    );
+    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
   };
 
   const handleLogin = (userData) => {
     setUser(userData);
     setView('parking');
     localStorage.setItem('user', JSON.stringify(userData));
-    addNotification('Zalogowano pomyślnie!', 'success'); // Powiadomienie po logowaniu
+    addNotification('Zalogowano pomyślnie!', 'System', 'success', true);
   };
 
   const handleLogout = () => {
@@ -50,7 +64,7 @@ function App() {
     setView('login');
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    addNotification('Wylogowano pomyślnie!', 'success'); // Powiadomienie po wylogowaniu
+    addNotification('Wylogowano pomyślnie!', 'System', 'success', true);
   };
 
   useEffect(() => {
@@ -70,9 +84,19 @@ function App() {
       case 'reservation':
         return <ReservationForm user={user} />;
       case 'users':
-        return <UserManagement />;
+        return user?.role === 'admin' ? (
+          <UserManagement />
+        ) : (
+          <p className="text-center text-red-500">Brak uprawnień do tej strony.</p>
+        );
       case 'notificationsboard':
-        return <NotificationsBoard notifications={notifications} removeNotification={removeNotification} />;
+        return (
+          <NotificationsBoard
+            notifications={notifications}
+            addNotification={addNotification}
+            removeNotification={removeNotification}
+          />
+        );
       case 'cancelReservation':
         return <CancelReservation />;
       case 'map':
@@ -84,15 +108,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <Header 
-        setView={setView} 
-        user={user} 
-        handleLogout={handleLogout} 
-        notifications={notifications} // Przekazujemy powiadomienia do nagłówka
-        removeNotification={removeNotification} 
-        
-      />
-      {/* Przekazujemy powiadomienia do komponentu Notifications */}
+      <Header setView={setView} user={user} handleLogout={handleLogout} />
       <Notifications notifications={notifications} removeNotification={removeNotification} />
       <main className="flex-grow container mx-auto p-6">{renderView()}</main>
       <footer className="bg-gray-800 text-white text-center py-4">
