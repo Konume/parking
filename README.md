@@ -1,6 +1,6 @@
 # Parking Management System
 > A web-based parking management system that allows users to reserve parking spaces, manage users, and send notifications.  
-> Live demo [_coming soon_].
+
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -146,18 +146,18 @@ Users can send notifications using the Notifications Form on the dashboard.
 Notifications appear dynamically on the header bar.
 ## Project Status
 Project is: in progress
-The main functionalities (reservations, user management, notifications) are working. Future improvements and testing are ongoing.
+The main functionalities (reservations, user management, notifications) are working. Role-based access for administrators and users is done.
+Using Leaflet for navigation to parking spots us also done.
+Future improvements and testing are ongoing.
+
 
 ## Room for Improvement
 ### Areas to improve:
-
 Add real-time updates with WebSockets for live notifications.
-Implement role-based access for administrators and users.
 Improve UX/UI design using more animations and transitions.
 ### To-do:
-
 Allow users to view their notification history.
-Integration with Google Maps or using Leaflet for navigation to parking spots.
+
 ## Acknowledgements
 This project was inspired by the need for modern, dynamic parking management systems. Special thanks to:
 
