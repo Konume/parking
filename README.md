@@ -150,6 +150,58 @@ The main functionalities (reservations, user management, notifications) are work
 Using Leaflet for navigation to parking spots us also done.
 Future improvements and testing are ongoing.
 
+## ✅ Testy automatyczne (Playwright)
+
+Projekt zawiera zestaw testów end-to-end napisanych z wykorzystaniem [Playwright](https://playwright.dev/), które zapewniają poprawność działania aplikacji.
+
+### 📁 Struktura testów
+
+Testy znajdują się w folderze `tests/`. Każdy plik testowy odpowiada konkretnemu scenariuszowi użytkownika, takim jak:
+- Logowanie użytkownika
+- Walidacja danych logowania
+- Rezerwacja miejsca parkingowego
+- Rezerwacja i anulowanie rezerwacji
+- Wyświetlanie mapy parkingu
+- Dodanie nowego użytkownika
+- Wyświetlanie i zarządzanie powiadomieniami
+
+### 🚀 Uruchamianie testów lokalnie
+
+Aby uruchomić testy lokalnie, wykonaj następujące kroki:
+
+1. Zainstaluj zależności:
+
+   ```bash
+   npm install
+2. Uruchom testy:
+   ```bash
+   npx playwright test
+
+3.Przykładowy test:
+  ```bash
+import { test, expect } from '@playwright/test';
+
+test('rezerwacja test', async ({ page }) => {
+  await page.goto('http://localhost:3000/');
+  await expect(page.getByRole('textbox', { name: 'Email' })).toBeVisible();
+  await page.getByRole('textbox', { name: 'Email' }).click();  
+  await page.getByRole('textbox', { name: 'Email' }).fill('zs@example.com');
+  await expect(page.getByRole('textbox', { name: 'Hasło' })).toBeVisible();
+  await page.getByRole('textbox', { name: 'Hasło' }).click();
+  await page.getByRole('textbox', { name: 'Hasło' }).fill('qaz123');
+  await expect(page.getByRole('button', { name: 'Zaloguj się' })).toBeVisible();
+  await page.getByRole('button', { name: 'Zaloguj się' }).click();
+  await expect(page.getByRole('heading')).toContainText('Status miejsc parkingowych');
+  await page.locator('div').filter({ hasText: /^Miejsce 3Wolne$/ }).getByRole('img').click();
+  await expect(page.locator('div').filter({ hasText: /^Miejsce 3ZajęteZarezerwowane przez: Zuzanna$/ }).getByRole('img')).toBeVisible();
+  await expect(page.getByText('Miejsce 3')).toHaveText('Miejsce 3');
+  await page.getByText('Miejsce 3').click();
+
+  await expect(page.getByText('Zajęte')).toHaveText('Zajęte');
+  await expect(page.getByText('Zarezerwowane przez: Zuzanna')).toHaveText('Zarezerwowane przez: Zuzanna');
+  
+});
+```
 
 ## Room for Improvement
 ### Areas to improve:
