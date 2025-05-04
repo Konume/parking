@@ -165,8 +165,6 @@ Testy znajdują się w folderze `tests/`. Każdy plik testowy odpowiada konkretn
 - Dodanie nowego użytkownika
 - Wyświetlanie i zarządzanie powiadomieniami
 
-
-
 ## ⚠️ Uwaga – Kolejność uruchamiania aplikacji
 
 Aby poprawnie uruchomić aplikację oraz testy, wykonaj poniższe kroki w podanej kolejności:
@@ -186,9 +184,10 @@ npm start
 ### 3. Uruchom testy
 Gdy backend i frontend są już uruchomione, możesz przeprowadzić testy zgodnie z instrukcjami poniżej
 
+---
 
 
-### 🚀 Uruchamianie testów lokalnie
+## 🚀 Uruchamianie testów lokalnie
 
 Aby uruchomić testy lokalnie, wykonaj następujące kroki:
 
