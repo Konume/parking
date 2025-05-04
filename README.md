@@ -79,31 +79,31 @@ The goal was to create an intuitive, modern system for efficient parking space a
 ### Installation Steps:
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/parking-management-system.git
-   cd parking-management-system
+   git clone https://github.com/konume/parking.git
+   cd parking
 
 2. Install dependencies for backend:
   ```bash
-cd backend
+cd server
 npm install
   ```
 3.Install dependencies for frontend:
 
   ```bash
 Skopiuj kod
-cd frontend
+cd client
 npm install
   ```
 4.Run backend:
 
 ```bash
-cd backend
+cd server
 npm start
 # Backend runs on: http://localhost:5001
 ```
 5.Run frontend:
 ```bash
-cd frontend
+cd client
 npm start
 # Frontend runs on: http://localhost:3000
 ```
@@ -168,6 +168,9 @@ Testy znajdują się w folderze `tests/`. Każdy plik testowy odpowiada konkretn
 ### 🚀 Uruchamianie testów lokalnie
 
 Aby uruchomić testy lokalnie, wykonaj następujące kroki:
+
+!!Uwaga!!
+Uruchom najpierw uruchom backend komendą node server.js w katalogu server oraz frontend komendą npm start w katalogu client. By potem uruchomić testy
 
 1. Zainstaluj zależności:
 
