@@ -64,7 +64,7 @@ The goal was to create an intuitive, modern system for efficient parking space a
 ### User Management
 ![User Management](obraz_2024-12-18_191015747.png)
 
-### Mapa
+### Map
 ![Map View](obraz-mapa.PNG)
 
 ---
@@ -165,22 +165,44 @@ Testy znajdują się w folderze `tests/`. Każdy plik testowy odpowiada konkretn
 - Dodanie nowego użytkownika
 - Wyświetlanie i zarządzanie powiadomieniami
 
+
+
+## ⚠️ Uwaga – Kolejność uruchamiania aplikacji
+
+Aby poprawnie uruchomić aplikację oraz testy, wykonaj poniższe kroki w podanej kolejności:
+
+### 1. Uruchom backend
+
+Przejdź do katalogu `server` i uruchom serwer komendą:
+
+```bash
+node server.js
+```
+### 2. Uruchom frontend
+W nowym terminalu przejdź do katalogu client i uruchom aplikację frontendową:
+```bash
+npm start
+```
+### 3. Uruchom testy
+Gdy backend i frontend są już uruchomione, możesz przeprowadzić testy zgodnie z instrukcjami poniżej
+
+
+
 ### 🚀 Uruchamianie testów lokalnie
 
 Aby uruchomić testy lokalnie, wykonaj następujące kroki:
 
-!!Uwaga!!
-Uruchom najpierw uruchom backend komendą node server.js w katalogu server oraz frontend komendą npm start w katalogu client. By potem uruchomić testy
-
-1. Zainstaluj zależności:
+## 1. Zainstaluj zależności:
 
    ```bash
    npm install
-2. Uruchom testy:
+```
+## 2. Uruchom testy:
    ```bash
    npx playwright test
+```
+## 3.Przykładowy test:
 
-3.Przykładowy test:
   ```bash
 import { test, expect } from '@playwright/test';
 
